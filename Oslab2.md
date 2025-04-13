@@ -617,25 +617,31 @@ graph TD
     subgraph LRU缓存操作
         subgraph 加入lru链表
             lru_cache_add_file --> __lru_cache_add
-
-            lru_cache_add_active_or_inactive --> lru_cache_add --> __lru_cache_add --> __pagevec_lru_add --> |__pagevec_lru_add_fn| A(pagevec_lru_move_fn)
-
             lru_cache_add_anon --> __lru_cache_add
+            lru_cache_add_active_or_inactive --> lru_cache_add --> __lru_cache_add --> __pagevec_lru_add
         end
         class 加入lru链表 subNode
+
         subgraph 移到lru链表尾部
 
-            rotate_reclaimable_page --> pagevec_move_tail --> |__pagevec_move_tail_fn| A
+            rotate_reclaimable_page --> pagevec_move_tail 
         end
         class 移到lru链表尾部 subNode
+
         subgraph 移到inactive文件链表
-            deactivate_file_page --> |lru_deactivate_file_fn| A
+            deactivate_file_page
         end
         class 移到inactive文件链表 subNode
+
         subgraph 移到inactive匿名链表
-            mark_page_lazyfree --> |lru_lazyfree_fn| A
+            mark_page_lazyfree
         end
         class 移到inactive匿名链表 subNode
+
+        __pagevec_lru_add --> |__pagevec_lru_add_fn| A(pagevec_lru_move_fn)
+        pagevec_move_tail --> |__pagevec_move_tail_fn| A
+        deactivate_file_page --> |lru_deactivate_file_fn| A
+        mark_page_lazyfree --> |lru_lazyfree_fn| A
     end
     class LRU缓存操作 mainNode
 ```
@@ -661,6 +667,7 @@ graph TD;
             free_unref_page_commit --> free_pcppages_bulk --> __free_one_page --> C
         end
         class 释放页面 subNode
+        
         subgraph 清空缓存
             lru_add_drain_cpu --> __pagevec_lru_add_fn
             lru_add_drain_cpu --->  __pagevec_move_tail_fn
