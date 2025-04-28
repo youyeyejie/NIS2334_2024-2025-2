@@ -4,10 +4,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void child_task(int num) {
+void child_task() {
     for (int i = 1; i <= 3; i++) {
-        printf("Child %d: Task %d\n", num, i);
+        printf("Child %d: Task %d\n", getpid(), i);
     }
+    sleep(10); // 模拟一些工作
     // exit(EXIT_SUCCESS);
 }
 
@@ -19,7 +20,7 @@ int main() {
         perror("fork error for pid1");
         exit(EXIT_FAILURE);
     } else if (pid1 == 0) {
-        child_task(1);
+        child_task();
     }
     // 创建第二个子进程
     pid2 = fork();
@@ -27,7 +28,7 @@ int main() {
         perror("fork error for pid2");
         exit(EXIT_FAILURE);
     } else if (pid2 == 0) {
-        child_task(2);
+        child_task();
     }
     // 父进程等待两个子进程结束
     int status1, status2;
@@ -39,6 +40,6 @@ int main() {
     if (WIFEXITED(status2)) {
         printf("Child process %d exited with status %d\n", wpid2, WEXITSTATUS(status2));
     }
-    printf("Parent process finished waiting for children.\n");
+    printf("Parent process %d finished waiting for children.\n", getpid());
     return 0;
 }

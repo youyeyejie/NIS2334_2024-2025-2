@@ -23,7 +23,7 @@ int main() {
         if (WIFEXITED(status)) {
             printf("Child process %d exited with status %d\n", wpid, WEXITSTATUS(status));
         }
-        printf("Parent process continues.\n");
+        printf("Parent process %d continues.\n", getpid());
     }
     return 0;
 }
